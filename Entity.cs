@@ -10,12 +10,13 @@ namespace Engine
         static public Dictionary<Type, List<object>> entities = new Dictionary<Type, List<object>>();
 
         public List<Component> components;
-        public Dictionary<object, List<System.Collections.IEnumerator>> coroutines;
+
+        public Coroutine coroutine;
 
         public EntityBase()
         {
             components = new List<Component>();
-            coroutines = new Dictionary<object, List<System.Collections.IEnumerator>>();
+            coroutine = new Coroutine();
         }
 
         public T GetComponent<T>() where T : Component
@@ -30,31 +31,14 @@ namespace Engine
             return (IEnumerable<T>)from i in components where i.GetType() == typeof(T) select i;
         }
 
-        public void StartCoroutine(System.Collections.IEnumerator coroutine)
+        public void Coroutine(System.Collections.IEnumerator coroutine)
         {
-            if (!coroutine.MoveNext())
-                return;
-
-            try
-            {
-                coroutines[coroutine.Current].Add(coroutine);
-            }
-            catch (KeyNotFoundException)
-            {
-                coroutines.Add(coroutine.Current, new List<System.Collections.IEnumerator>() { coroutine });
-            }
+            this.coroutine.Create(coroutine);
         }
 
-        public void SendCoroutine(object message)
+        public void Send(object message)
         {
-            List<System.Collections.IEnumerator> value;
-            if (!coroutines.TryGetValue(message, out value))
-                return;
-
-            coroutines.Remove(message);
-
-            foreach (System.Collections.IEnumerator coroutine in value)
-                coroutine.MoveNext();
+            coroutine.Send(message);
         }
     }
 

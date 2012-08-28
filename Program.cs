@@ -63,8 +63,8 @@ namespace Engine
             var trigger_components = trigger.GetComponents<Component>();
 
 
-            trigger.StartCoroutine(MyCoroutine());
-            trigger.SendCoroutine(0);
+            trigger.Coroutine(MyCoroutine());
+            trigger.Send(0);
 
 
             var infs = from i in typeof(Charater).GetFields() where Attribute.IsDefined(i, typeof(UberAttribute)) select i;
