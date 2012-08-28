@@ -31,7 +31,7 @@ namespace Engine
             }
         }
 
-        public void Send(object message = null)
+        public void Send(object message)
         {
             List<System.Collections.IEnumerator> value;
             if (!coroutines.TryGetValue(message, out value))
