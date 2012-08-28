@@ -7,8 +7,6 @@ namespace Engine
 {
     public class Coroutine
     {
-        static public readonly Coroutine singleton = new Coroutine();
-
         public Dictionary<object, List<System.Collections.IEnumerator>> coroutines;
 
         public Coroutine()
