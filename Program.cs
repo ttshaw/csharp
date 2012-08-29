@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,9 +42,25 @@ namespace Engine
 
     class Program
     {
-        static System.Collections.IEnumerator MyCoroutine()
+        class _EndOn
         {
-            yield return 0;
+            public object message;
+            public IEnumerator Post(LinkedListNode<IEnumerator> node)
+            {
+                yield return message;
+                node.List.Remove(node);
+            }
+        }
+
+        static Coroutine.Post EndOn(object message)
+        {
+            return new Coroutine.Post(new _EndOn() { message = message }.Post);
+        }
+
+        static IEnumerator Hello()
+        {
+            yield return EndOn(0);
+            yield return 2;
         }
 
         static void Main(string[] args)
@@ -62,16 +79,16 @@ namespace Engine
             Component trigger_component = trigger.GetComponent<Component>();
             var trigger_components = trigger.GetComponents<Component>();
 
-
-            trigger.Coroutine(MyCoroutine());
-            trigger.Send(0);
-
-
             var infs = from i in typeof(Charater).GetFields() where Attribute.IsDefined(i, typeof(UberAttribute)) select i;
             foreach (System.Reflection.FieldInfo i in infs)
             {
                 var value = i.GetValue(player);
             }
+
+            Coroutine co = new Coroutine();
+            co.Create(Hello());
+            co.Send(2);
+            co.Send(0);
 
             Console.WriteLine("hello world");
         }

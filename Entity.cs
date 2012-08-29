@@ -11,12 +11,9 @@ namespace Engine
 
         public List<Component> components;
 
-        public Coroutine coroutine;
-
         public EntityBase()
         {
             components = new List<Component>();
-            coroutine = new Coroutine();
         }
 
         public T GetComponent<T>() where T : Component
@@ -29,16 +26,6 @@ namespace Engine
         public IEnumerable<T> GetComponents<T>() where T : Component
         {
             return (IEnumerable<T>)from i in components where i.GetType() == typeof(T) select i;
-        }
-
-        public void Coroutine(System.Collections.IEnumerator coroutine)
-        {
-            this.coroutine.Create(coroutine);
-        }
-
-        public void Send(object message)
-        {
-            coroutine.Send(message);
         }
     }
 

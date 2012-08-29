@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,37 +8,50 @@ namespace Engine
 {
     public class Coroutine
     {
-        public Dictionary<object, List<System.Collections.IEnumerator>> coroutines;
+        public delegate IEnumerator Post(LinkedListNode<IEnumerator> node);
+
+        public Dictionary<object, LinkedList<IEnumerator>> routines;
 
         public Coroutine()
         {
-            coroutines = new Dictionary<object, List<System.Collections.IEnumerator>>();
+            routines = new Dictionary<object, LinkedList<IEnumerator>>();
         }
 
-        public void Create(System.Collections.IEnumerator coroutine)
+        public void Create(IEnumerator coroutine)
         {
             if (!coroutine.MoveNext())
                 return;
 
+            LinkedListNode<IEnumerator> node = new LinkedListNode<IEnumerator>(coroutine);
+
+            if (coroutine.Current is Post)
+            {
+                Create(((Post)coroutine.Current)(node));
+                if (!coroutine.MoveNext())
+                    return;
+            }
+
             try
             {
-                coroutines[coroutine.Current.GetType()].Add(coroutine);
+                routines[coroutine.Current.GetType()].AddLast(node);
             }
             catch (KeyNotFoundException)
             {
-                coroutines.Add(coroutine.Current, new List<System.Collections.IEnumerator>() { coroutine });
+                LinkedList<IEnumerator> list = new LinkedList<IEnumerator>();
+                list.AddLast(node);
+                routines.Add(coroutine.Current, list);
             }
         }
 
         public void Send(object message)
         {
-            List<System.Collections.IEnumerator> value;
-            if (!coroutines.TryGetValue(message, out value))
+            LinkedList<IEnumerator> value;
+            if (!routines.TryGetValue(message, out value))
                 return;
 
-            coroutines.Remove(message);
+            routines.Remove(message);
 
-            foreach (System.Collections.IEnumerator coroutine in value)
+            foreach (IEnumerator coroutine in value)
                 Create(coroutine);
         }
     }
