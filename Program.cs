@@ -54,7 +54,7 @@ namespace Engine
 
         static Coroutine.Post EndOn(object message)
         {
-            return new Coroutine.Post(new _EndOn() { message = message }.Post);
+            return new _EndOn() { message = message }.Post;
         }
 
         static IEnumerator Hello()
