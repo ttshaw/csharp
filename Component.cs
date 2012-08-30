@@ -7,12 +7,12 @@ namespace Engine
 {
     class Component
     {
-        private EntityBase Entity;
+        private EntityBase MyEntity;
 
         public Component(EntityBase entity)
         {
-            Entity = entity;
-            Entity.Components.Add(this);
+            MyEntity = entity;
+            MyEntity.Components.Add(this);
         }
     }
 }
