@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Waitil.cs" />
     <Compile Include="Component.cs" />
     <Compile Include="Coroutine.cs" />
     <Compile Include="Entity.cs" />

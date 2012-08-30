@@ -42,25 +42,15 @@ namespace Engine
 
     class Program
     {
-        class _EndOn
-        {
-            public object message;
-            public IEnumerator Post(LinkedListNode<IEnumerator> node)
-            {
-                yield return message;
-                node.List.Remove(node);
-            }
-        }
-
-        static Coroutine.Post EndOn(object message)
-        {
-            return new _EndOn() { message = message }.Post;
-        }
-
         static IEnumerator Hello()
         {
-            yield return EndOn(0);
-            yield return 2;
+            for (Waitil waitil; ; )
+            {
+                yield return waitil = new Waitil(0).Endon(-1, () =>
+                {
+                    Console.WriteLine("end...");
+                });
+            }
         }
 
         static void Main(string[] args)
@@ -85,10 +75,9 @@ namespace Engine
                 var value = i.GetValue(player);
             }
 
-            Coroutine co = new Coroutine();
-            co.Create(Hello());
-            co.Send(2);
-            co.Send(0);
+            Coroutine.Invoke(Hello());
+            Coroutine.Send(0, 1, 2, 3);
+            Coroutine.Send(-1);
 
             Console.WriteLine("hello world");
         }
