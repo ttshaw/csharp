@@ -10,12 +10,7 @@ namespace Engine
     {
         public class Factory
         {
-            public Dictionary<object, LinkedList<IEnumerator>> Routines;
-
-            public Factory()
-            {
-                Routines = new Dictionary<object, LinkedList<IEnumerator>>();
-            }
+            public Dictionary<object, LinkedList<IEnumerator>> Routines = new Dictionary<object, LinkedList<IEnumerator>>();
 
             public LinkedListNode<IEnumerator> Invoke(IEnumerator enumerator)
             {
