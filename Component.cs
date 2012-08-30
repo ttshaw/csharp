@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,12 +7,12 @@ namespace Engine
 {
     class Component
     {
-        private EntityBase entity;
+        private EntityBase Entity;
 
         public Component(EntityBase entity)
         {
-            this.entity = entity;
-            this.entity.components.Add(this);
+            Entity = entity;
+            Entity.Components.Add(this);
         }
     }
 }

@@ -7,13 +7,13 @@ namespace Engine
 {
     class EntityBase
     {
-        static public Dictionary<Type, List<object>> entities = new Dictionary<Type, List<object>>();
+        static public Dictionary<Type, List<object>> Entities = new Dictionary<Type, List<object>>();
 
-        public List<Component> components;
+        public List<Component> Components;
 
         public EntityBase()
         {
-            components = new List<Component>();
+            Components = new List<Component>();
         }
 
         public T GetComponent<T>() where T : Component
@@ -25,7 +25,7 @@ namespace Engine
 
         public IEnumerable<T> GetComponents<T>() where T : Component
         {
-            return (IEnumerable<T>)from i in components where i.GetType() == typeof(T) select i;
+            return (IEnumerable<T>)from i in Components where i.GetType() == typeof(T) select i;
         }
     }
 
@@ -33,12 +33,12 @@ namespace Engine
     {
         static Entity()
         {
-            entities.Add(typeof(T), new List<object>());
+            Entities.Add(typeof(T), new List<object>());
         }
 
         public Entity()
         {
-            entities[typeof(T)].Add(this);
+            Entities[typeof(T)].Add(this);
         }
     }
 }
