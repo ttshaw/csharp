@@ -11,10 +11,15 @@ namespace Engine
         public object Message;
         public object[] Results;
         public Action<Coroutine.Factory, LinkedListNode<IEnumerator>> Init = null;
+        public Coroutine.Factory Factory;
 
         public Waitil(object message)
         {
             Message = message;
+            Init += (factory, node) =>
+                {
+                    Factory = factory;
+                };
         }
 
         public Waitil Endon(object message, Action callback = null)
