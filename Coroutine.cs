@@ -8,7 +8,7 @@ namespace Engine
 {
     public class Coroutine
     {
-        public class Factory
+        class Factory
         {
             public Dictionary<object, LinkedList<IEnumerator>> Routines = new Dictionary<object, LinkedList<IEnumerator>>();
 
@@ -28,7 +28,7 @@ namespace Engine
                 list.AddLast(node);
 
                 if (enumerator.Current is Waitil && ((Waitil)enumerator.Current).Init != null)
-                    ((Waitil)enumerator.Current).Init(this, node);
+                    ((Waitil)enumerator.Current).Init(node);
 
                 return node;
             }

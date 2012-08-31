@@ -10,23 +10,18 @@ namespace Engine
     {
         public object Message;
         public object[] Results;
-        public Action<Coroutine.Factory, LinkedListNode<IEnumerator>> Init = null;
-        public Coroutine.Factory Factory;
+        public Action<LinkedListNode<IEnumerator>> Init = null;
 
         public Waitil(object message)
         {
             Message = message;
-            Init += (factory, node) =>
-                {
-                    Factory = factory;
-                };
         }
 
         public Waitil Endon(object message, Action callback = null)
         {
-            Init += (factory, node) =>
+            Init += (node) =>
             {
-                factory.Invoke(EndonHelper(message, node, Message, callback));
+                Coroutine.Invoke(EndonHelper(message, node, Message, callback));
             };
             return this;
         }
@@ -52,9 +47,9 @@ namespace Engine
             LinkedListNode<IEnumerator> helper = null;
             yield return new Waitil(message)
             {
-                Init = (factory, enumerator) =>
+                Init = (enumerator) =>
                 {
-                    helper = factory.Invoke(EndonHelper(endon, enumerator));
+                    helper = Coroutine.Invoke(EndonHelper(endon, enumerator));
                 }
             };
             node.List.Remove(node);
