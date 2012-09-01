@@ -57,6 +57,9 @@ namespace Engine
                 }
             };
 
+            if (helper.List != null)
+                helper.List.Remove(helper);
+
             if (node.List != null)
             {
                 node.List.Remove(node);
@@ -64,9 +67,6 @@ namespace Engine
                 if (callback != null)
                     callback();
             }
-
-            if (helper.List != null)
-                helper.List.Remove(helper);
         }
     }
 
