@@ -46,7 +46,7 @@ namespace Engine
         {
             for (Waitil waitil; ; )
             {
-                yield return waitil = new WaitilAny(0).Endon(-1, () =>
+                yield return waitil = new WaitilAll(0, 1).Endon(-1, () =>
                 {
                     Console.WriteLine("end...");
                 });
@@ -79,7 +79,7 @@ namespace Engine
             Coroutine.Invoke(Hello());
             Coroutine.Send(0);
             Coroutine.Send(-1);
-            Coroutine.Send(0);
+            Coroutine.Send(1);
 
             Console.WriteLine("hello world");
         }

@@ -83,7 +83,7 @@ namespace Engine
         static IEnumerator Helper(object message, WaitilAny waitany)
         {
             yield return new Waitil(message).Endon(waitany.Message);
-            Coroutine.Send(waitany.Message);
+            Coroutine.Send(waitany.Message, message);
         }
     }
 
