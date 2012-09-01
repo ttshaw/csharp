@@ -102,6 +102,7 @@ namespace Engine
         static IEnumerator Helper(object message, WaitilAll waitall)
         {
             yield return message;
+
             if (--waitall.HowManyToWait <= 0)
                 Coroutine.Send(waitall.Message);
         }
