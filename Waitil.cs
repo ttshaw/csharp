@@ -91,11 +91,11 @@ namespace Engine
                 Coroutine.Invoke(Helper(message, this));
         }
 
-        static IEnumerator Helper(object message, WaitilAll root)
+        static IEnumerator Helper(object message, WaitilAll waitall)
         {
             yield return message;
-            if (--root.HowManyToWait <= 0)
-                Coroutine.Send(root.Message);
+            if (--waitall.HowManyToWait <= 0)
+                Coroutine.Send(waitall.Message);
         }
     }
 }
