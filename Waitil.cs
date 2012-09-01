@@ -42,6 +42,7 @@ namespace Engine
         static IEnumerator EndonHelper(object message, LinkedListNode<IEnumerator> node)
         {
             yield return message;
+
             if (node.List != null)
                 node.List.Remove(node);
         }
