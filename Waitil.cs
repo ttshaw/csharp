@@ -12,7 +12,6 @@ namespace Engine
         public object Message;
         public object[] Results;
         public Action<LinkedListNode<IEnumerator>> Init = null;
-        public Queue<object> Endons = new Queue<object>();
 
         public Waitil(object message)
         {
@@ -22,8 +21,6 @@ namespace Engine
         public Waitil Endon(object message, Action callback = null)
         {
             Debug.Assert(message != Message);
-
-            Endons.Enqueue(message);
 
             Init += (node) =>
             {
@@ -87,13 +84,7 @@ namespace Engine
 
         static IEnumerator Helper(object message, WaitilAny waitany)
         {
-            Waitil waitil = new Waitil(message).Endon(waitany.Message);
-
-            foreach (object endon in waitany.Endons)
-                waitil.Endon(endon);
-
-            yield return waitil;
-
+            yield return new Waitil(message).Endon(waitany.Message);
             Coroutine.Send(waitany.Message);
         }
     }
@@ -113,13 +104,7 @@ namespace Engine
 
         static IEnumerator Helper(object message, WaitilAll waitall)
         {
-            Waitil waitil = new Waitil(message);
-
-            foreach (object endon in waitall.Endons)
-                waitil.Endon(endon);
-
-            yield return waitil;
-
+            yield return message;
             if (--waitall.HowManyToWait <= 0)
                 Coroutine.Send(waitall.Message);
         }
