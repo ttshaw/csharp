@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 
 namespace Engine
 {
@@ -17,8 +18,10 @@ namespace Engine
             Message = message;
         }
 
-        public Waitil Endon(object message, Action callback = null)
+        public virtual Waitil Endon(object message, Action callback = null)
         {
+            Debug.Assert(message != Message);
+
             Init += (node) =>
             {
                 Coroutine.Invoke(EndonHelper(message, node, Message, callback));
@@ -56,6 +59,43 @@ namespace Engine
             helper.List.Remove(helper);
             if (callback != null)
                 callback();
+        }
+    }
+
+    public class WaitilAny : Waitil
+    {
+        public WaitilAny(params object[] messages)
+            : base(new object())
+        {
+            foreach (object message in messages)
+                Coroutine.Invoke(Helper(message, Message));
+        }
+
+        static IEnumerator Helper(object message, object endon)
+        {
+            yield return new Waitil(message).Endon(endon);
+            Coroutine.Send(endon);
+        }
+    }
+
+    public class WaitilAll : Waitil
+    {
+        int HowManyToWait;
+
+        public WaitilAll(params object[] messages)
+            : base(new object())
+        {
+            HowManyToWait = messages.Length;
+
+            foreach (object message in messages)
+                Coroutine.Invoke(Helper(message, this));
+        }
+
+        static IEnumerator Helper(object message, WaitilAll root)
+        {
+            yield return message;
+            if (--root.HowManyToWait <= 0)
+                Coroutine.Send(root.Message);
         }
     }
 }

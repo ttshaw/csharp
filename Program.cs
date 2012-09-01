@@ -46,7 +46,7 @@ namespace Engine
         {
             for (Waitil waitil; ; )
             {
-                yield return waitil = new Waitil(0).Endon(-1, () =>
+                yield return waitil = new WaitilAny(0).Endon(-1, () =>
                 {
                     Console.WriteLine("end...");
                 });
