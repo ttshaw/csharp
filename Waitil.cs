@@ -75,11 +75,8 @@ namespace Engine
         public WaitilAny(params object[] messages)
             : base(new object())
         {
-            Init += (node) =>
-            {
-                foreach (object message in messages)
-                    Coroutine.Invoke(Helper(message, this));
-            };
+            foreach (object message in messages)
+                Coroutine.Invoke(Helper(message, this));
         }
 
         static IEnumerator Helper(object message, WaitilAny waitany)
