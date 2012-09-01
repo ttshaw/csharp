@@ -12,15 +12,18 @@ namespace Engine
         public object Message;
         public object[] Results;
         public Action<LinkedListNode<IEnumerator>> Init = null;
+        public Queue<object> Endons = new Queue<object>();
 
         public Waitil(object message)
         {
             Message = message;
         }
 
-        public virtual Waitil Endon(object message, Action callback = null)
+        public Waitil Endon(object message, Action callback = null)
         {
             Debug.Assert(message != Message);
+
+            Endons.Enqueue(message);
 
             Init += (node) =>
             {
@@ -42,7 +45,8 @@ namespace Engine
         static IEnumerator EndonHelper(object message, LinkedListNode<IEnumerator> node)
         {
             yield return message;
-            node.List.Remove(node);
+            if (node.List != null)
+                node.List.Remove(node);
         }
 
         static IEnumerator EndonHelper(object message, LinkedListNode<IEnumerator> node, object endon, Action callback)
@@ -55,10 +59,17 @@ namespace Engine
                     helper = Coroutine.Invoke(EndonHelper(endon, enumerator));
                 }
             };
-            node.List.Remove(node);
-            helper.List.Remove(helper);
-            if (callback != null)
-                callback();
+
+            if (node.List != null)
+            {
+                node.List.Remove(node);
+
+                if (callback != null)
+                    callback();
+            }
+
+            if (helper.List != null)
+                helper.List.Remove(helper);
         }
     }
 
@@ -67,20 +78,29 @@ namespace Engine
         public WaitilAny(params object[] messages)
             : base(new object())
         {
-            foreach (object message in messages)
-                Coroutine.Invoke(Helper(message, Message));
+            Init += (node) =>
+            {
+                foreach (object message in messages)
+                    Coroutine.Invoke(Helper(message, this));
+            };
         }
 
-        static IEnumerator Helper(object message, object endon)
+        static IEnumerator Helper(object message, WaitilAny waitany)
         {
-            yield return new Waitil(message).Endon(endon);
-            Coroutine.Send(endon);
+            Waitil waitil = new Waitil(message).Endon(waitany.Message);
+
+            foreach (object endon in waitany.Endons)
+                waitil.Endon(endon);
+
+            yield return waitil;
+
+            Coroutine.Send(waitany.Message);
         }
     }
 
     public class WaitilAll : Waitil
     {
-        int HowManyToWait;
+        int HowManyToWait = 0;
 
         public WaitilAll(params object[] messages)
             : base(new object())
@@ -93,7 +113,13 @@ namespace Engine
 
         static IEnumerator Helper(object message, WaitilAll waitall)
         {
-            yield return message;
+            Waitil waitil = new Waitil(message);
+
+            foreach (object endon in waitall.Endons)
+                waitil.Endon(endon);
+
+            yield return waitil;
+
             if (--waitall.HowManyToWait <= 0)
                 Coroutine.Send(waitall.Message);
         }

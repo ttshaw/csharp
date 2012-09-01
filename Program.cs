@@ -50,6 +50,7 @@ namespace Engine
                 {
                     Console.WriteLine("end...");
                 });
+                break;
             }
         }
 
@@ -76,8 +77,9 @@ namespace Engine
             }
 
             Coroutine.Invoke(Hello());
-            Coroutine.Send(0, 1, 2, 3);
+            Coroutine.Send(0);
             Coroutine.Send(-1);
+            Coroutine.Send(0);
 
             Console.WriteLine("hello world");
         }

@@ -35,17 +35,19 @@ namespace Engine
 
             public void Send(object message, params object[] results)
             {
-                LinkedList<IEnumerator> value;
-                if (!Routines.TryGetValue(message, out value))
+                LinkedList<IEnumerator> list;
+                if (!Routines.TryGetValue(message, out list))
                     return;
 
                 Routines.Remove(message);
 
-                foreach (IEnumerator coroutine in value)
+                while (list.First != null)
                 {
-                    if (coroutine.Current is Waitil)
-                        ((Waitil)coroutine.Current).Results = results;
-                    Invoke(coroutine);
+                    IEnumerator enumerator = list.First.Value;
+                    list.RemoveFirst();
+                    if (enumerator.Current is Waitil)
+                        ((Waitil)enumerator.Current).Results = results;
+                    Invoke(enumerator);
                 }
             }
         }
