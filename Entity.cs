@@ -54,11 +54,9 @@ namespace Engine
             EntityBase Entity;
 
             public WaitilEntity(EntityBase entity, Waitil waitil)
-                : base(waitil.Message)
+                : base(waitil)
             {
                 Entity = entity;
-                Init = waitil.Init;
-
                 base.Endon(entity);
             }
 
