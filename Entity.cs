@@ -47,7 +47,7 @@ namespace Engine
         }
     }
 
-    public static class Extension
+    public static partial class Extension
     {
         class WaitilEntity : Waitil
         {
