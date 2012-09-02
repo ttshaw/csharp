@@ -37,6 +37,13 @@ namespace Engine
         public Trigger()
         {
             new Component(this);
+
+            Coroutine.Invoke(OnSomething());
+        }
+
+        IEnumerator OnSomething()
+        {
+            yield return this.Waitil(0).Endon(-1);
         }
     }
 
@@ -80,6 +87,7 @@ namespace Engine
             Coroutine.Send(0);
             Coroutine.Send(-1);
             Coroutine.Send(1);
+            player.Send(0);
 
             Console.WriteLine("hello world");
         }

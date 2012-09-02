@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Engine
 {
-    class Component
+    public class Component
     {
         private EntityBase MyEntity;
 

@@ -18,7 +18,7 @@ namespace Engine
             Message = message;
         }
 
-        public Waitil Endon(object message, Action callback = null)
+        public virtual Waitil Endon(object message, Action callback = null)
         {
             Debug.Assert(message != Message);
 
