@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Engine
 {
-    public class EntityBase
+    public abstract class EntityBase
     {
         static public Dictionary<Type, List<object>> Entities = new Dictionary<Type, List<object>>();
 
