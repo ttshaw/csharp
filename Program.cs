@@ -83,11 +83,7 @@ namespace Engine
                 var value = i.GetValue(player);
             }
 
-            Coroutine.Invoke(Hello());
-            Coroutine.Send(0);
-            Coroutine.Send(-1);
-            Coroutine.Send(1);
-            player.Send(0);
+            trigger.Send(0);
 
             Console.WriteLine("hello world");
         }

@@ -18,6 +18,13 @@ namespace Engine
             Message = message;
         }
 
+        protected Waitil(Waitil waitil)
+        {
+            Message = waitil.Message;
+            Results = waitil.Results;
+            Init = waitil.Init;
+        }
+
         public virtual Waitil Endon(object message, Action callback = null)
         {
             Debug.Assert(message != Message);

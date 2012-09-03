@@ -9,16 +9,18 @@ namespace Engine
     {
         static public Dictionary<Type, List<object>> Entities = new Dictionary<Type, List<object>>();
 
-        public List<Component> Components;
+        public readonly List<Component> Components;
+        public readonly WeakReference TheWeakReference;
 
         public EntityBase()
         {
             Components = new List<Component>();
+            TheWeakReference = new WeakReference(this);
         }
 
         ~EntityBase()
         {
-            Coroutine.Send(this);
+            Coroutine.Send(TheWeakReference);
         }
 
         public T GetComponent<T>() where T : Component
@@ -51,13 +53,13 @@ namespace Engine
     {
         class WaitilEntity : Waitil
         {
-            EntityBase Entity;
+            WeakReference Entity;
 
             public WaitilEntity(EntityBase entity, Waitil waitil)
                 : base(waitil)
             {
-                Entity = entity;
-                base.Endon(entity);
+                Entity = entity.TheWeakReference;
+                base.Endon(Entity);
             }
 
             public override Engine.Waitil Endon(object message, Action callback = null)
@@ -68,13 +70,13 @@ namespace Engine
 
         public static Waitil Waitil(this EntityBase entity, object message)
         {
-            return new WaitilEntity(entity, new Waitil(Tuple.Create(entity, message)));
+            return new WaitilEntity(entity, new Waitil(Tuple.Create(entity.TheWeakReference, message)));
         }
 
         public static Waitil WaitilAny(this EntityBase entity, params object[] messages)
         {
             for (int i = 0, size = messages.Length; i < size; ++i)
-                messages[i] = Tuple.Create(entity, messages[i]);
+                messages[i] = Tuple.Create(entity.TheWeakReference, messages[i]);
 
             return new WaitilEntity(entity, new WaitilAny(messages));
         }
@@ -82,14 +84,14 @@ namespace Engine
         public static Waitil WaitilAll(this EntityBase entity, params object[] messages)
         {
             for (int i = 0, size = messages.Length; i < size; ++i)
-                messages[i] = Tuple.Create(entity, messages[i]);
+                messages[i] = Tuple.Create(entity.TheWeakReference, messages[i]);
 
             return new WaitilEntity(entity, new WaitilAll(messages));
         }
 
         public static void Send(this EntityBase entity, object message, params object[] results)
         {
-            Coroutine.Send(Tuple.Create(entity, message), results);
+            Coroutine.Send(Tuple.Create(entity.TheWeakReference, message), results);
         }
     }
 }
