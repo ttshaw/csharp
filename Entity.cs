@@ -18,11 +18,6 @@ namespace Engine
             TheWeakReference = new WeakReference(this);
         }
 
-        ~EntityBase()
-        {
-            Coroutine.Send(TheWeakReference);
-        }
-
         public T GetComponent<T>() where T : Component
         {
             foreach (Component component in GetComponents<T>())
@@ -59,7 +54,6 @@ namespace Engine
                 : base(waitil)
             {
                 Entity = entity.TheWeakReference;
-                base.Endon(Entity);
             }
 
             public override Engine.Waitil Endon(object message, Action callback = null)
