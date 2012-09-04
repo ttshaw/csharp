@@ -7,7 +7,7 @@ namespace Engine
 {
     public abstract class EntityBase
     {
-        static public Dictionary<Type, List<object>> Entities = new Dictionary<Type, List<object>>();
+        static public Dictionary<Type, LinkedList<WeakReference>> Entities = new Dictionary<Type, LinkedList<WeakReference>>();
 
         public readonly List<Component> Components;
         public readonly WeakReference TheWeakReference;
@@ -33,14 +33,21 @@ namespace Engine
 
     public class Entity<T> : EntityBase
     {
+        LinkedListNode<WeakReference> Node;
+
         static Entity()
         {
-            Entities.Add(typeof(T), new List<object>());
+            Entities.Add(typeof(T), new LinkedList<WeakReference>());
         }
 
         public Entity()
         {
-            Entities[typeof(T)].Add(this);
+            Entities[typeof(T)].AddLast(Node = new LinkedListNode<WeakReference>(TheWeakReference));
+        }
+
+        ~Entity()
+        {
+            Node.List.Remove(Node);
         }
     }
 
