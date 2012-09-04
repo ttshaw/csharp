@@ -10,7 +10,7 @@ namespace Engine
     {
         class Factory
         {
-            public Dictionary<object, LinkedList<IEnumerator>> Routines = new Dictionary<object, LinkedList<IEnumerator>>();
+            public Dictionary<object, LinkedList<IEnumerator>> routines = new Dictionary<object, LinkedList<IEnumerator>>();
 
             public LinkedListNode<IEnumerator> Invoke(IEnumerator enumerator)
             {
@@ -18,10 +18,10 @@ namespace Engine
                     return null;
 
                 LinkedList<IEnumerator> list;
-                if (!Routines.TryGetValue(enumerator.Current, out list))
+                if (!routines.TryGetValue(enumerator.Current, out list))
                 {
                     list = new LinkedList<IEnumerator>();
-                    Routines.Add(enumerator.Current, list);
+                    routines.Add(enumerator.Current, list);
                 }
 
                 LinkedListNode<IEnumerator> node = new LinkedListNode<IEnumerator>(enumerator);
@@ -36,17 +36,17 @@ namespace Engine
             public void Send(object message, params object[] results)
             {
                 LinkedList<IEnumerator> list;
-                if (!Routines.TryGetValue(message, out list))
+                if (!routines.TryGetValue(message, out list))
                     return;
 
-                Routines.Remove(message);
+                routines.Remove(message);
 
                 while (list.First != null)
                 {
                     IEnumerator enumerator = list.First.Value;
                     list.RemoveFirst();
                     if (enumerator.Current is Waitil)
-                        ((Waitil)enumerator.Current).Results = results;
+                        ((Waitil)enumerator.Current).results = results;
                     Invoke(enumerator);
                 }
             }

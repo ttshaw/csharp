@@ -9,41 +9,42 @@ namespace Engine
 {
     public class Waitil
     {
-        public object Message;
-        public object[] Results;
+        public object message;
+        public object[] results;
+
         public Action<LinkedListNode<IEnumerator>> Init = null;
 
         public Waitil(object message)
         {
-            Message = message;
+            this.message = message;
         }
 
         protected Waitil(Waitil waitil)
         {
-            Message = waitil.Message;
-            Results = waitil.Results;
+            message = waitil.message;
+            results = waitil.results;
             Init = waitil.Init;
         }
 
         public virtual Waitil Endon(object message, Action callback = null)
         {
-            Debug.Assert(message != Message);
+            Debug.Assert(this.message != message);
 
             Init += (node) =>
             {
-                Coroutine.Invoke(EndonHelper(message, node, Message, callback));
+                Coroutine.Invoke(EndonHelper(message, node, message, callback));
             };
             return this;
         }
 
         public override bool Equals(object obj)
         {
-            return Message.Equals(obj);
+            return message.Equals(obj);
         }
 
         public override int GetHashCode()
         {
-            return Message.GetHashCode();
+            return message.GetHashCode();
         }
 
         static IEnumerator EndonHelper(object message, LinkedListNode<IEnumerator> node)
@@ -89,8 +90,8 @@ namespace Engine
 
         static IEnumerator Helper(object message, WaitilAny waitany)
         {
-            yield return new Waitil(message).Endon(waitany.Message);
-            Coroutine.Send(waitany.Message, message);
+            yield return new Waitil(message).Endon(waitany.message);
+            Coroutine.Send(waitany.message, message);
         }
     }
 
@@ -112,7 +113,7 @@ namespace Engine
             yield return message;
 
             if (--waitall.HowManyToWait <= 0)
-                Coroutine.Send(waitall.Message);
+                Coroutine.Send(waitall.message);
         }
     }
 }

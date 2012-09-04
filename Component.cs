@@ -7,12 +7,12 @@ namespace Engine
 {
     public class Component
     {
-        public readonly EntityBase Entity;
+        public readonly EntityBase entity;
 
         public Component(EntityBase entity)
         {
-            Entity = entity;
-            Entity.Components.Add(this);
+            this.entity = entity;
+            this.entity.components.Add(this);
         }
     }
 
