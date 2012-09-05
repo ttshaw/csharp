@@ -52,16 +52,16 @@ namespace Engine
             }
         }
 
-        static Factory TheFactory = new Factory();
+        static Factory theFactory = new Factory();
 
         static public LinkedListNode<IEnumerator> Invoke(IEnumerator enumerator)
         {
-            return TheFactory.Invoke(enumerator);
+            return theFactory.Invoke(enumerator);
         }
 
         static public void Send(object message, params object[] results)
         {
-            TheFactory.Send(message, results); 
+            theFactory.Send(message, results); 
         }
     }
 }
