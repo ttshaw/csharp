@@ -20,22 +20,27 @@ namespace Engine
     {
         public static Waitil Waitil(this Component component, object message)
         {
-            return component.Waitil(message);
+            return component.entity.Waitil(message);
         }
 
         public static Waitil WaitilAny(this Component component, params object[] messages)
         {
-            return component.WaitilAny(messages);
+            return component.entity.WaitilAny(messages);
         }
 
         public static Waitil WaitilAll(this Component component, params object[] messages)
         {
-            return component.WaitilAll(messages);
+            return component.entity.WaitilAll(messages);
         }
 
         public static void Send(this Component component, object message, params object[] results)
         {
-            component.Send(results);
+            component.entity.Send(results);
+        }
+
+        public static void Endon(this Component component, object message, Action callback = null)
+        {
+            component.entity.Endon(message, callback);
         }
     }
 }

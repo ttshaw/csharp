@@ -12,8 +12,12 @@ namespace Engine
         {
             public readonly Dictionary<object, LinkedList<IEnumerator>> routines = new Dictionary<object, LinkedList<IEnumerator>>();
 
+            public event Action<LinkedListNode<IEnumerator>> OnDoneDuringInvoking;
+
             public LinkedListNode<IEnumerator> Invoke(IEnumerator enumerator)
             {
+                OnDoneDuringInvoking = null;
+
                 if (!enumerator.MoveNext())
                     return null;
 
@@ -27,8 +31,7 @@ namespace Engine
                 LinkedListNode<IEnumerator> node = new LinkedListNode<IEnumerator>(enumerator);
                 list.AddLast(node);
 
-                if (enumerator.Current is Waitil && ((Waitil)enumerator.Current).Init != null)
-                    ((Waitil)enumerator.Current).Init(node);
+                if (OnDoneDuringInvoking != null) OnDoneDuringInvoking(node);
 
                 return node;
             }
@@ -62,6 +65,25 @@ namespace Engine
         static public void Send(object message, params object[] results)
         {
             theFactory.Send(message, results); 
+        }
+
+        static public void Endon(object message, Action callback = null)
+        {
+            theFactory.OnDoneDuringInvoking += (node) => 
+            {
+                Invoke(EndonHelper(message, node, callback));
+            };
+        }
+
+        static IEnumerator EndonHelper(object message, LinkedListNode<IEnumerator> node, Action callback)
+        {
+            yield return message;
+
+            if (node.List != null)
+            {
+                node.List.Remove(node);
+                if (callback != null) callback();
+            }
         }
     }
 }

@@ -43,7 +43,9 @@ namespace Engine
 
         IEnumerator OnSomething()
         {
-            yield return this.Waitil(0).Endon(-1);
+            this.Endon(-1);
+
+            yield return this.Waitil(0);
         }
     }
 
@@ -51,13 +53,15 @@ namespace Engine
     {
         static IEnumerator Hello()
         {
+            Coroutine.Endon(-1, () => 
+            {
+                Console.WriteLine("endon");
+            });
+
             for (Waitil waitil; ; )
             {
-                yield return waitil = new WaitilAll(0, 1).Endon(-1, () =>
-                {
-                    Console.WriteLine("end...");
-                });
-                break;
+                yield return waitil = new Waitil("tick");
+                Console.WriteLine("ticking");
             }
         }
 
@@ -84,6 +88,7 @@ namespace Engine
             }
 
             trigger.Send(0);
+            Coroutine.Invoke(Hello());
 
             Console.WriteLine("hello world");
         }
